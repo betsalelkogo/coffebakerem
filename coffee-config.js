@@ -2,7 +2,7 @@
 const COFFEE_CONFIG = {
   /** Web3Forms – מפתח ייעודי להזמנות קפה (web3forms.com) */
   web3forms: {
-    apiKey: "f44eb130-d905-4a71-8b45-96102d2c3524",
+    apiKey: "7649cac2-ce6b-4a86-93cc-f05b35322b76",
     subject: "הזמנת קפה חדשה – קפה בכרם",
     fromName: "קפה בכרם – הזמנה",
   },
@@ -17,11 +17,11 @@ const COFFEE_CONFIG = {
 
   menu: [
     { id: "espresso", name: "אספרסו", price: 10 },
-    { id: "cappuccino", name: "קפוצ'ינו", price: 14 },
-    { id: "latte", name: "לאטה", price: 16 },
-    { id: "americano", name: "Americano", price: 12 },
+    { id: "cappuccino", name: "קפוצ'ינו", price: 13 },
+    { id: "latte", name: "קפוצ׳ינו גדול - ךןןדא שיש לפני הזמנה!", price: 15 },
+    { id: "americano", name: "תפוזים", price: 13 },
     { id: "cold-brew", name: "קפה קר", price: 18 },
     { id: "cold-shokolate", name: "שוקו קר", price: 18 },
-    { id: "hot-shokolate", name: "שוקו חם", price: 18 },
+    { id: "hot-shokolate", name: "תה", price: 10 },
   ],
 };
