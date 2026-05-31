@@ -28,22 +28,15 @@
     return `₪${amount}`;
   }
 
-  function normalizePhone(phone) {
-    const digits = String(phone).replace(/\D/g, "");
-    if (digits.startsWith("972")) {
-      return digits;
-    }
-    if (digits.startsWith("0")) {
-      return `972${digits.slice(1)}`;
-    }
-    return digits;
-  }
-
-  function applyUrlTemplate(template, vars) {
-    return template.replace(/\{(\w+)\}/g, (_, key) => {
-      const value = vars[key] ?? "";
-      return encodeURIComponent(String(value));
-    });
+  function buildPaymentDetails(total, customerName) {
+    return {
+      total,
+      phone: cfg.paymentPhoneDisplay,
+      customerName,
+      clipboardText: `תשלום קפה בכרם: ${formatCurrency(total)} ל-${cfg.paymentPhoneDisplay}${customerName ? ` – ${customerName}` : ""}`,
+      bitUrl: cfg.bitPaymentLink,
+      payboxUrl: cfg.payboxPaymentLink,
+    };
   }
 
   function getCartLines() {
@@ -114,26 +107,6 @@
     });
   }
 
-  function buildPaymentDetails(total, customerName) {
-    const phone = normalizePhone(cfg.paymentPhone);
-    const note = `קפה בכרם – ${customerName || "הזמנה"}`;
-    const urlVars = {
-      phone,
-      amount: total,
-      name: customerName,
-      note,
-    };
-
-    return {
-      total,
-      phone: cfg.paymentPhoneDisplay,
-      customerName,
-      clipboardText: `תשלום קפה בכרם: ${formatCurrency(total)} ל-${cfg.paymentPhoneDisplay}${customerName ? ` – ${customerName}` : ""}`,
-      bitUrl: applyUrlTemplate(cfg.bitPaymentUrlTemplate, urlVars),
-      payboxUrl: applyUrlTemplate(cfg.payboxPaymentUrlTemplate, urlVars),
-    };
-  }
-
   function showToast(message) {
     let toast = document.querySelector(".payment-toast");
     if (!toast) {
@@ -165,8 +138,10 @@
     paymentAmountEl.textContent = formatCurrency(order.total);
     paymentPhoneDisplayEl.textContent = cfg.paymentPhoneDisplay;
     payBitLink.href = lastPaymentDetails.bitUrl;
+    payBitLink.setAttribute("aria-label", `פתיחת Bit לתשלום ${formatCurrency(order.total)}`);
     payBitLink.textContent = `Bit – ${formatCurrency(order.total)}`;
     payPayboxLink.href = lastPaymentDetails.payboxUrl;
+    payPayboxLink.setAttribute("aria-label", `פתיחת Paybox לתשלום ${formatCurrency(order.total)}`);
     payPayboxLink.textContent = `Paybox – ${formatCurrency(order.total)}`;
 
     paymentStatus.textContent = "";
