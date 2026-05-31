@@ -1,0 +1,21 @@
+{
+  "name": "קפה בכרם – הזמנה",
+  "short_name": "קפה בכרם",
+  "description": "הזמנת קפה – שלמו ב-Bit או Paybox",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#faf6f1",
+  "theme_color": "#3d2914",
+  "lang": "he",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

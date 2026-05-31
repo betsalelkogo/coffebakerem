@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="קפה בכרם">
+  <meta name="theme-color" content="#3d2914">
+  <meta name="description" content="קפה של רונס בכרם – הזמנת קפה">
+  <title>קפה בכרם | הזמנה</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/coffee.css">
+</head>
+<body>
+  <header class="coffee-header">
+    <div class="container">
+      <h1>הקפה של רונס בכרם</h1>
+      <p class="tagline">הזמינו קפה – שלמו ב-Bit או Paybox</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="order-section" class="order-section">
+      <form id="order-form" novalidate>
+        <fieldset class="menu-fieldset">
+          <legend>מה תרצו?</legend>
+          <div id="menu-grid" class="menu-grid" aria-live="polite"></div>
+          <p class="order-total" id="order-total" aria-live="polite">סה״כ: ₪0</p>
+        </fieldset>
+
+        <fieldset class="details-fieldset">
+          <legend>פרטים</legend>
+          <label>
+            <span>שם</span>
+            <input type="text" id="customer-name" name="name" required autocomplete="name">
+          </label>
+          <label>
+            <span>טלפון</span>
+            <input type="tel" id="customer-phone" name="phone" required autocomplete="tel" dir="ltr" placeholder="054-1234567">
+          </label>
+          <label>
+            <span>הערות (אופציונלי)</span>
+            <textarea id="order-notes" name="notes" rows="2" placeholder="ללא סוכר, חלב שקדים..."></textarea>
+          </label>
+        </fieldset>
+
+        <button type="submit" class="btn btn-primary btn-block" id="submit-btn">המשך לתשלום</button>
+        <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section id="payment-section" class="payment-section" hidden>
+      <div id="payment-step" class="payment-card">
+        <h2>תשלום</h2>
+        <p class="payment-intro">שלמו את הסכום הבא ב-Bit או Paybox, ואז אשרו שהתשלום נשלח.</p>
+
+        <div class="payment-amount-box">
+          <span class="payment-label">לתשלום</span>
+          <span class="payment-amount" id="payment-amount">₪0</span>
+        </div>
+
+        <p class="payment-phone-line">
+          ל-<strong id="payment-phone-display" dir="ltr"></strong>
+        </p>
+
+        <div class="payment-link-grid">
+          <a class="btn btn-bit btn-block" id="pay-bit" href="#">Bit</a>
+          <a class="btn btn-paybox btn-block" id="pay-paybox" href="#">Paybox</a>
+        </div>
+
+        <button type="button" class="btn btn-outline btn-block" id="copy-payment">העתקת פרטי תשלום</button>
+
+        <button type="button" class="btn btn-primary btn-block" id="confirm-payment">שילמתי – שלח הזמנה</button>
+        <p class="form-status" id="payment-status" role="status" aria-live="polite"></p>
+
+        <details class="payment-help">
+          <summary>איך משלמים?</summary>
+          <ol>
+            <li>לחצו על Bit או Paybox – האפליקציה תיפתח עם הסכום.</li>
+            <li>אם הסכום לא מולא אוטומטית, העבירו את הסכום למספר למעלה.</li>
+            <li>לאחר התשלום, לחצו «שילמתי – שלח הזמנה».</li>
+          </ol>
+        </details>
+
+        <button type="button" class="btn btn-text" id="back-to-order">חזרה לעריכת הזמנה</button>
+      </div>
+
+      <div id="success-step" class="payment-card" hidden>
+        <p class="payment-success-icon" aria-hidden="true">✓</p>
+        <h2>ההזמנה נשלחה!</h2>
+        <p class="payment-intro">קיבלנו את ההזמנה. תודה!</p>
+        <button type="button" class="btn btn-primary btn-block" id="new-order">הזמנה חדשה</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="/coffee-config.js"></script>
+  <script src="/coffee.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
+  </script>
+</body>
+</html>
