@@ -12,9 +12,9 @@
   "dir": "rtl",
   "icons": [
     {
-      "src": "/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/logo.jpg",
+      "sizes": "725x1024",
+      "type": "image/jpeg",
       "purpose": "any"
     }
   ]
