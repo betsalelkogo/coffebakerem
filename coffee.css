@@ -328,8 +328,11 @@ textarea:focus {
   filter: brightness(1.08);
 }
 
-#confirm-payment {
-  margin-top: 0.5rem;
+.btn-bit.disabled,
+.btn-paybox.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: not-allowed;
 }
 
 .payment-help {
