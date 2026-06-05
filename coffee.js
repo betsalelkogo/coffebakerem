@@ -16,13 +16,14 @@
   const payBitLink = document.getElementById("pay-bit");
   const payPayboxLink = document.getElementById("pay-paybox");
   const copyPaymentBtn = document.getElementById("copy-payment");
-  const confirmPaymentBtn = document.getElementById("confirm-payment");
   const paymentStatus = document.getElementById("payment-status");
   const backToOrderBtn = document.getElementById("back-to-order");
   const newOrderBtn = document.getElementById("new-order");
 
   let pendingOrder = null;
   let lastPaymentDetails = null;
+  let orderSubmitted = false;
+  let orderSubmitting = false;
 
   function formatCurrency(amount) {
     return `₪${amount}`;
@@ -146,7 +147,9 @@
 
     paymentStatus.textContent = "";
     paymentStatus.classList.remove("error");
-    confirmPaymentBtn.disabled = false;
+    orderSubmitted = false;
+    orderSubmitting = false;
+    setPaymentLinksDisabled(false);
     paymentStep.hidden = false;
     successStep.hidden = true;
 
@@ -161,7 +164,19 @@
     paymentSection.scrollIntoView({ behavior: "smooth" });
   }
 
-  async function submitOrderToEmail(order) {
+  function setPaymentLinksDisabled(disabled) {
+    payBitLink.setAttribute("aria-disabled", String(disabled));
+    payPayboxLink.setAttribute("aria-disabled", String(disabled));
+    if (disabled) {
+      payBitLink.classList.add("disabled");
+      payPayboxLink.classList.add("disabled");
+    } else {
+      payBitLink.classList.remove("disabled");
+      payPayboxLink.classList.remove("disabled");
+    }
+  }
+
+  async function submitOrderToEmail(order, paymentMethod) {
     const web3 = cfg.web3forms;
     if (!web3?.apiKey) {
       return { ok: false, skipped: true };
@@ -177,7 +192,7 @@
       `סה״כ: ${formatCurrency(order.total)}`,
       order.notes ? `\nהערות: ${order.notes}` : "",
       "",
-      "סטטוס תשלום: הלקוח אישר שהתשלום נשלח",
+      `אמצעי תשלום: ${paymentMethod}`,
     ]
       .filter(Boolean)
       .join("\n");
@@ -205,6 +220,8 @@
     cart.clear();
     pendingOrder = null;
     lastPaymentDetails = null;
+    orderSubmitted = false;
+    orderSubmitting = false;
     menuGrid.querySelectorAll("[data-qty-for]").forEach((el) => {
       el.textContent = "0";
     });
@@ -214,6 +231,7 @@
     formStatus.classList.remove("error");
     paymentStatus.textContent = "";
     paymentStatus.classList.remove("error");
+    setPaymentLinksDisabled(false);
     paymentStep.hidden = false;
     successStep.hidden = true;
     paymentSection.hidden = true;
@@ -252,32 +270,53 @@
     });
   });
 
-  confirmPaymentBtn.addEventListener("click", async () => {
-    if (!pendingOrder) {
+  async function handlePaymentLinkClick(paymentMethod) {
+    if (!pendingOrder || orderSubmitted || orderSubmitting) {
       return;
     }
 
+    orderSubmitting = true;
     paymentStatus.textContent = "";
     paymentStatus.classList.remove("error");
-    confirmPaymentBtn.disabled = true;
+    setPaymentLinksDisabled(true);
     paymentStatus.textContent = "שולח הזמנה...";
 
     try {
-      const result = await submitOrderToEmail(pendingOrder);
+      const result = await submitOrderToEmail(pendingOrder, paymentMethod);
       if (!result.skipped && !result.ok) {
+        orderSubmitting = false;
+        setPaymentLinksDisabled(false);
         paymentStatus.textContent = "שגיאה בשליחה – נסו שוב";
         paymentStatus.classList.add("error");
-        confirmPaymentBtn.disabled = false;
         return;
       }
 
+      orderSubmitted = true;
+      orderSubmitting = false;
       showSuccessScreen();
       paymentStatus.textContent = "";
     } catch {
+      orderSubmitting = false;
+      setPaymentLinksDisabled(false);
       paymentStatus.textContent = "שגיאה בשליחה – נסו שוב";
       paymentStatus.classList.add("error");
-      confirmPaymentBtn.disabled = false;
     }
+  }
+
+  function onPaymentLinkClick(e, paymentMethod) {
+    if (orderSubmitted || orderSubmitting) {
+      e.preventDefault();
+      return;
+    }
+    handlePaymentLinkClick(paymentMethod);
+  }
+
+  payBitLink.addEventListener("click", (e) => {
+    onPaymentLinkClick(e, "Bit");
+  });
+
+  payPayboxLink.addEventListener("click", (e) => {
+    onPaymentLinkClick(e, "Paybox");
   });
 
   copyPaymentBtn.addEventListener("click", () => {
