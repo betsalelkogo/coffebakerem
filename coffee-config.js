@@ -18,6 +18,7 @@ const COFFEE_CONFIG = {
   menu: [
     { id: "espresso", name: "אספרסו", price: 10 },
     { id: "cappuccino", name: "הפוך", price: 13 },
+    { id: "large cappuccino", name: "הפוך גדול", price: 15 },
     { id: "americano", name: "תפוזים", price: 13 },
     { id: "cold-brew", name: "קפה קר", price: 18 },
     { id: "cold-shokolate", name: "שוקו קר", price: 18 },
