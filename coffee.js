@@ -176,6 +176,41 @@
     }
   }
 
+  async function submitOrderToTelegram(order, paymentMethod) {
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), 10000);
+
+    try {
+      const response = await fetch("/api/order", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: order.name,
+          phone: order.phone,
+          notes: order.notes,
+          total: order.total,
+          summary: order.summary,
+          paymentMethod,
+        }),
+        signal: controller.signal,
+      });
+
+      if (response.status === 404) {
+        return { ok: false, skipped: true };
+      }
+
+      const result = await response.json().catch(() => ({}));
+      return { ok: response.ok && result.ok === true, skipped: false };
+    } catch {
+      return { ok: false, skipped: true };
+    } finally {
+      window.clearTimeout(timer);
+    }
+  }
+
   async function submitOrderToEmail(order, paymentMethod) {
     const web3 = cfg.web3forms;
     if (!web3?.apiKey) {
@@ -282,8 +317,14 @@
     paymentStatus.textContent = "שולח הזמנה...";
 
     try {
-      const result = await submitOrderToEmail(pendingOrder, paymentMethod);
-      if (!result.skipped && !result.ok) {
+      const [emailResult, telegramResult] = await Promise.all([
+        submitOrderToEmail(pendingOrder, paymentMethod),
+        submitOrderToTelegram(pendingOrder, paymentMethod),
+      ]);
+      const attempted = [emailResult, telegramResult].filter((result) => !result.skipped);
+      const delivered = attempted.some((result) => result.ok);
+
+      if (attempted.length > 0 && !delivered) {
         orderSubmitting = false;
         setPaymentLinksDisabled(false);
         paymentStatus.textContent = "שגיאה בשליחה – נסו שוב";
