@@ -12,7 +12,7 @@ const COFFEE_CONFIG = {
 
   /** קישורי תשלום קבועים מ-Bit / Paybox (כמו בטופס) */
   bitPaymentLink:
-    "https://www.bitpay.co.il/app/me/213B64FE-AD31-B916-D730-1E0796130DB8FAA2",
+    "https://www.bitpay.co.il/app/me/9854DABE-8531-E68C-54AB-8F5F9F1471CC2A1F",
   payboxPaymentLink: "https://links.payboxapp.com/ynN9DuOkoWb",
 
   menu: [
