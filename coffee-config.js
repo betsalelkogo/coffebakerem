@@ -22,7 +22,7 @@ const COFFEE_CONFIG = {
     { id: "americano", name: "תפוזים", price: 13 },
     { id: "cold-brew", name: "קפה קר", price: 18 },
     { id: "cold-shokolate", name: "שוקו קר", price: 18 },
-    { id: "hot-shokolate", name: "תה", price: 10 },
-    { id: "ice", name: "ברד", price: 5 },
+    { id: "hot-shokolate", name: "שוקו חם", price: 13 },
+    { id: "ice", name: "תה", price: 10 },
   ],
 };
